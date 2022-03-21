@@ -3,6 +3,7 @@ import "./index.css"
 import React from"react"
 import { nanoid } from "nanoid"
 import Confetti from "react-confetti"
+import { click } from "@testing-library/user-event/dist/click"
 export default function App() {
 
   const[dice,setDice]=React.useState(allNewDice)
@@ -36,15 +37,21 @@ export default function App() {
     
   
   }
- 
+ const[clickno, setclickno]=React.useState(0)
+//  const set=()=>{
+//   setclickno(clickno++)
+//  }
 
   function holdDice(id){
     setDice(prev=>prev.map(die=>{
       return die.id==id?{...die,isHeld:!die.isHeld} : die
     }))
+    dice.forEach(die=>{
+      (die.isHeld===true)?setclickno(clickno++):setclickno(clickno--)
+    })
    }
-  //  dice.forEach(die=>{
-  //   (die.isHeld===true && dice[0].value===die.value)? setTenzies(true) && console.log("you won"):setTenzies(false)
+    
+   
    
    React.useEffect(()=>{
        const allheld=dice.every(die=> die.isHeld)
@@ -53,7 +60,6 @@ export default function App() {
        if (allheld && allsamevalue) {
          setTenzies(true)
          console.log("you won")
-         
        }
       },[dice])
 
@@ -65,6 +71,7 @@ export default function App() {
       }
       else{
         setButton("Roll")
+        
       }
     })
 
@@ -77,10 +84,13 @@ export default function App() {
       {tenzies && <Confetti/> }
       <h1 className="title">Tenzies</h1>
             <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
-      <div className="dice-container">
+      <div className="dice-container" >
         {diceElements}  
       </div>
       <button className="roll-dice" onClick={Roll}>{button}</button>
+      <div>
+      <span className="clicks">clicks:</span><span className="clickcount">{clickno}</span>
+      </div>
     </main>
   );
 }
